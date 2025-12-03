@@ -38,100 +38,119 @@ const events: Event[] = [
 export default async function Home() {
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      {/* Глубокий фон */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-black via-gray-900 to-black"></div>
+    <div className="min-h-screen bg-gray-950 text-gray-100">
+      {/* Минималистичный фон: точечная сетка */}
+      <div
+        className="absolute inset-0 -z-10 opacity-5"
+        style={{
+          backgroundImage: `
+            radial-gradient(circle, #ffffff 1px, transparent 1px)
+          `,
+          backgroundSize: '40px 40px',
+          backgroundPosition: 'center center',
+        }}
+      ></div>
 
-      {/* Шапка — как у госпортала */}
-      <header className="border-b border-red-900/40 backdrop-blur-md bg-black/60 sticky top-0 z-50">
+      {/* Шапка — чистая, с фокусом на интерфейсе */}
+      <header className="relative z-10 border-b border-red-900/30 backdrop-blur-md bg-black/60 sticky top-0">
         <div className="px-6 lg:px-10 py-5 flex flex-col sm:flex-row sm:items-center justify-between max-w-7xl mx-auto">
-          {/* Название без логотипа */}
           <div>
-            <h1 className="text-2xl md:text-3xl font-black tracking-tight text-white font-sans">
+            <h1 className="text-2xl md:text-3xl font-black tracking-tight text-white">
               Dem_Platform
             </h1>
             <p className="text-red-400 text-sm mt-1">
-              Платформа Министерства спорта РФ
+              Единая система соревнований по единоборствам
             </p>
           </div>
 
           <div className="flex items-center gap-4 mt-4 sm:mt-0">
+            {/* Кнопка: Войти / ЛК — с анимацией */}
             <Link
               href="/dashboard"
-              className="text-sm border border-red-600 px-4 py-2 rounded text-red-100 hover:bg-red-600 hover:text-black transition"
+              className="group relative px-4 py-2.5 border border-red-600/50 text-red-100 hover:text-white font-medium text-sm rounded transition-colors duration-300"
             >
-              Личный кабинет
+              <span className="relative z-10">Личный кабинет</span>
+              <span className="absolute inset-0 rounded bg-gradient-to-r from-red-700/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></span>
+              <span className="absolute inset-0 rounded border border-transparent group-hover:border-red-500/50 transition duration-300 pointer-events-none"></span>
             </Link>
+
+            {/* Кнопка: Создать событие — с подсветкой и scale */}
             <Link
               href="/events/create"
-              className="text-sm bg-gradient-to-r from-red-700 to-red-800 px-5 py-2 rounded text-white hover:from-red-600 hover:to-red-700 transition font-medium"
+              className="group relative px-5 py-2.5 bg-gradient-to-r from-red-700 to-red-800 hover:from-red-600 hover:to-red-700 text-white font-medium text-sm rounded transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-red-500/20"
             >
-              ➕ Создать событие
+              <span className="relative z-10 flex items-center gap-2">
+                ➕ Создать событие
+              </span>
+              <span className="absolute inset-0 rounded opacity-0 group-hover:opacity-20 bg-white transition duration-300"></span>
             </Link>
           </div>
         </div>
       </header>
 
-      {/* Главный блок */}
+      {/* Основной контент */}
       <main className="px-6 lg:px-10 py-12 max-w-7xl mx-auto">
         {/* Заголовок */}
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
             Официальные соревнования и аттестации
           </h2>
-          <p className="text-gray-400 text-base max-w-3xl mx-auto">
-            Единая система учёта турниров и присвоения разрядов по видам единоборств в Российской Федерации
+          <p className="text-gray-400 text-base max-w-3xl mx-auto leading-relaxed">
+            Поддержка федераций, клубов и спортсменов по всей России.  
+            Учёт турниров, присвоение разрядов, жеребьёвка, судейство.
           </p>
         </div>
 
-        {/* Линия-разделитель с флаговыми цветами */}
-        <div className="h-1.5 w-full bg-gradient-to-r from-white via-blue-500 to-red-600 mb-12 rounded-full"></div>
+        {/* Флаговая линия — белый/красный/чёрный */}
+        <div className="h-1.5 w-full bg-gradient-to-r from-white via-red-600 to-black mb-14 rounded-full shadow-inner"></div>
 
-        {/* Статистика (стиль: как на госпорталах) */}
+        {/* Статистика */}
         <div className="grid gap-4 grid-cols-2 md:grid-cols-4 text-center mb-14">
           {[
-            { value: '256+', label: 'Спортивных клубов' },
-            { value: '18+', label: 'Региональных федераций' },
-            { value: '420+', label: 'Проведённых турниров' },
-            { value: '98%', label: 'Одобрение тренеров' },
+            { value: '256+', label: 'Клубов' },
+            { value: '18+', label: 'Федераций' },
+            { value: '420+', label: 'Турниров' },
+            { value: '98%', label: 'Одобрение' },
           ].map((stat, i) => (
             <div
               key={i}
-              className="bg-gradient-to-b from-gray-900 to-black border border-red-900/30 rounded-lg p-4"
+              className="bg-black/60 border border-red-900/30 rounded-lg p-4 backdrop-blur-sm hover:border-red-600/50 transition"
             >
               <div className="text-2xl font-black text-red-400">{stat.value}</div>
-              <div className="text-gray-400 text-xs mt-1 leading-tight">{stat.label}</div>
+              <div className="text-gray-400 text-xs mt-1">{stat.label}</div>
             </div>
           ))}
         </div>
 
-        {/* События */}
+        {/* Список событий */}
         <div className="mb-8 flex items-center justify-between">
           <h3 className="text-2xl font-bold text-white">Ближайшие события</h3>
           <Link
             href="/calendar"
-            className="text-red-400 text-sm hover:underline"
+            className="text-red-400 text-sm group hover:text-red-300 transition"
           >
-            Полный календарь →
+            Полный календарь{' '}
+            <span className="inline-block transition-transform group-hover:translate-x-1">
+              →
+            </span>
           </Link>
         </div>
 
         {events.length === 0 ? (
-          <div className="text-center py-20 bg-gray-900/50 rounded-xl border border-red-900/20">
+          <div className="text-center py-20 bg-black/40 rounded-xl border border-red-900/20">
             <div className="w-16 h-16 mx-auto mb-6 bg-gray-800 rounded flex items-center justify-center">
               <svg className="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
             </div>
             <p className="text-gray-400 text-lg">Нет запланированных мероприятий</p>
-            <p className="text-gray-500 text-sm mt-2">Ожидается обновление календаря</p>
           </div>
         ) : (
           <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {events.map((event) => (
               <div
                 key={event.id}
-                className="group bg-gray-900/70 border border-red-900/30 rounded-lg overflow-hidden transition hover:border-red-500/60 hover:shadow-lg hover:shadow-red-500/10"
+                className="group bg-black/60 border border-red-900/30 hover:border-red-500/60 rounded-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-red-500/10 backdrop-blur-sm"
               >
                 <EventCard event={event} />
               </div>
@@ -140,12 +159,13 @@ export default async function Home() {
         )}
       </main>
 
-      {/* Футер — официальный */}
+      {/* Футер */}
       <footer className="px-6 lg:px-10 py-8 border-t border-red-900/30 text-center text-gray-600 text-xs bg-black/50">
         <div className="max-w-7xl mx-auto space-y-2">
           <p className="text-white text-sm font-medium">Dem_Platform</p>
-          <p>Официальная платформа для организации соревнований по единоборствам в РФ</p>
-          <p>Разработка и поддержка: Демьяненко Алексей • 
+          <p>Официальная платформа для единоборств в Российской Федерации</p>
+          <p>
+            Разработчик: Демьяненко Алексей • 
             <Link
               href="https://vk.com/kempo30"
               target="_blank"
@@ -154,7 +174,7 @@ export default async function Home() {
               VK: kempo30
             </Link>
           </p>
-          <p className="text-gray-500">&copy; {new Date().getFullYear()} Министерство спорта Российской Федерации</p>
+          <p className="text-gray-500">&copy; {new Date().getFullYear()} Все права защищены</p>
         </div>
       </footer>
     </div>
