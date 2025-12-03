@@ -10,15 +10,8 @@ import { Filters } from '@/components/Filters';
 import { BeltStandards } from '@/components/BeltStandards';
 import { Partners } from '@/components/Partners';
 import { MobileMenu } from '@/components/MobileMenu';
-import dynamic from 'next/dynamic';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
-
-const PrintCalendarButton = dynamic(
-  () => import('@/components/PrintCalendarButton').then(mod => mod.PrintCalendarButton),
-  { ssr: false }
-);
-
 
 // Временные mock-данные
 const allEvents: Event[] = [
@@ -166,7 +159,15 @@ export default function Home() {
         <AnimatedSection delay={0.3}>
           <div className="mb-8 flex items-center justify-between">
             <h3 className="text-2xl font-bold text-white">Ближайшие события</h3>
-            <PrintCalendarButton events={events} />
+             <Link
+              href="/calendar"
+              className="text-red-400 text-sm group hover:text-red-300 transition"
+            >
+              Полный календарь{' '}
+              <span className="inline-block transition-transform group-hover:translate-x-1">
+                →
+              </span>
+            </Link>
           </div>
         </AnimatedSection>
 
