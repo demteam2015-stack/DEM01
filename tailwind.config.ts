@@ -10,7 +10,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Open Sans', 'sans-serif'],
+        sans: ['Roboto Condensed', 'sans-serif'],
         display: ['Bebas Neue', 'sans-serif'],
       },
     },
