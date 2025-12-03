@@ -243,6 +243,22 @@ function HomePageContent() {
             <Link href="/contact" className="hover:text-cyan-400 transition">Контакты</Link>
             <Link href="/privacy" className="hover:text-cyan-400 transition">Конфиденциальность</Link>
           </div>
+          <div className="flex flex-col items-center mb-4">
+            <p className="text-gray-400 text-sm">
+              Создатель платформы: <span className="font-medium text-white">Демьяненко Алексей</span>
+            </p>
+            <p className="text-gray-500 text-xs mt-1">
+              Разработчик и инициатор проекта
+            </p>
+            <a 
+              href="https://vk.com/kempo30" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-cyan-400 hover:text-cyan-300 text-sm mt-2 transition underline decoration-dotted"
+            >
+              VK: kempo30
+            </a>
+          </div>
           <p className="text-gray-600 font-mono text-xs">
             &copy; {new Date().getFullYear()} Dem_Platform • Powered by Combat & Code
           </p>
@@ -259,5 +275,3 @@ export default function HomePage() {
     </Suspense>
   );
 }
-
-    
