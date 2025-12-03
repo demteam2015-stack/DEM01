@@ -99,6 +99,9 @@ export default function Home() {
 
           <div className="hidden md:flex items-center gap-4 mt-4 sm:mt-0">
             <Notifications />
+            <Link href="/club/register" className="text-sm text-red-400 hover:text-red-300 transition">
+              🔷 Зарегистрировать клуб
+            </Link>
             <GosuslugiAuth />
             
             {/* Кнопка: Создать событие — с подсветкой и scale */}
