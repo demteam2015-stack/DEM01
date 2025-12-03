@@ -11,7 +11,7 @@ export type Fighter = {
 };
 
 // Получить всех бойцов
-export async function getAllFighters(): Promise<Fighter[]> {
+export async function getFighters(): Promise<Fighter[]> {
   const result = db.query("SELECT * FROM fighters");
   return Array.isArray(result) ? result as Fighter[] : [];
 }
@@ -19,6 +19,6 @@ export async function getAllFighters(): Promise<Fighter[]> {
 // Получить одного бойца по ID
 export async function getFighterById(id: string): Promise<Fighter | null> {
   // Наш адаптер пока не умеет SELECT ... WHERE, поэтому фильтруем вручную
-  const allFighters = await getAllFighters();
+  const allFighters = await getFighters();
   return allFighters.find(f => f.id === id) || null;
 }

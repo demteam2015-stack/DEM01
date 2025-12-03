@@ -5,9 +5,10 @@ import type { Tournament } from "@/lib/tournaments-api";
 
 export default function TournamentCard({ tournament }: { tournament: Tournament }) {
   const type = tournament.discipline === 'Certification' ? 'certification' : 'tournament';
+  const tournamentUrl = `/tournament/${tournament.id}`;
 
   return (
-    <Link href={`/tournaments/${tournament.id}`}>
+    <Link href={tournamentUrl}>
       <div className="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden hover:border-red-600 transition group">
         <div className={`py-3 text-center text-xs font-black uppercase tracking-wider text-white ${type === "tournament" ? "bg-red-700" : "bg-gray-700"}`}>
           {type === "tournament" ? "БОЙ" : "АТТЕСТАЦИЯ"}
