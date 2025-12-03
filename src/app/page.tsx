@@ -5,6 +5,7 @@ import Link from 'next/link';
 import React, { useEffect, useState, Suspense } from 'react';
 import { Button } from '@/components/ui/button';
 import { Trophy, Shield, Zap } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 import type { Tournament } from '@/lib/tournaments-api';
 import TournamentCard from '@/components/TournamentCard';
 
