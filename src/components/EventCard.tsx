@@ -1,17 +1,11 @@
 import Link from "next/link";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
-
-type Event = {
-  id: string;
-  title: string;
-  date: Date;
-  location: string;
-  type: 'TOURNAMENT' | 'CERTIFICATION';
-};
+import type { Event } from "@/lib/db";
 
 export default function EventCard({ event }: { event: Event }) {
   const isTournament = event.type === 'TOURNAMENT';
+  // Принимаем дату как строку и парсим ее, чтобы избежать проблем с гидратацией
   const date = new Date(event.date);
 
   return (

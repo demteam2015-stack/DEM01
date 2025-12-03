@@ -4,7 +4,7 @@
 export type Event = {
   id: string;
   title: string;
-  date: Date;
+  date: string; // Используем string для избежания ошибок гидратации
   location: string;
   type: 'TOURNAMENT' | 'CERTIFICATION';
 };
