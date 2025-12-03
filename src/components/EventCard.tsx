@@ -15,11 +15,11 @@ export default function EventCard({ event }: { event: Event }) {
   const date = new Date(event.date);
 
   return (
-    <>
+    <div className="flex flex-col h-full">
       <div className={`py-2 text-center text-xs font-bold uppercase text-white ${isTournament ? "bg-red-700/80" : "bg-blue-700/80"}`}>
         {isTournament ? "🏆 Турнир" : "📜 Аттестация"}
       </div>
-      <div className="p-5">
+      <div className="p-5 flex flex-col flex-grow">
         <h3 className="text-lg font-black text-white mb-4 line-clamp-2 h-14 group-hover:text-red-400 transition">
           {event.title}
         </h3>
@@ -35,7 +35,7 @@ export default function EventCard({ event }: { event: Event }) {
           </p>
         </div>
 
-        <div className="mt-6 flex justify-end">
+        <div className="mt-6 flex justify-end mt-auto pt-4">
           <Link
             href={`/events/${event.id}`}
             className="text-red-400 font-bold text-xs hover:underline"
@@ -44,6 +44,6 @@ export default function EventCard({ event }: { event: Event }) {
           </Link>
         </div>
       </div>
-    </>
+    </div>
   );
 }

@@ -1,6 +1,7 @@
 
 import EventCard from '@/components/EventCard';
 import Link from 'next/link';
+import { AnimatedSection } from '@/components/AnimatedSection';
 
 // Временные mock-данные из-за проблем с Prisma в этой среде
 type Event = {
@@ -91,69 +92,79 @@ export default async function Home() {
       {/* Основной контент */}
       <main className="px-6 lg:px-10 py-12 max-w-7xl mx-auto">
         {/* Заголовок */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
-            Официальные соревнования и аттестации
-          </h2>
-          <p className="text-gray-400 text-base max-w-3xl mx-auto leading-relaxed">
-            Поддержка федераций, клубов и спортсменов по всей России.  
-            Учёт турниров, присвоение разрядов, жеребьёвка, судейство.
-          </p>
-        </div>
-
-        {/* Флаговая линия — белый/красный/чёрный */}
-        <div className="h-1.5 w-full bg-gradient-to-r from-white via-red-600 to-black mb-14 rounded-full shadow-inner"></div>
+        <AnimatedSection>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
+              Официальные соревнования и аттестации
+            </h2>
+            <p className="text-gray-400 text-base max-w-3xl mx-auto leading-relaxed">
+              Поддержка федераций, клубов и спортсменов по всей России.  
+              Учёт турниров, присвоение разрядов, жеребьёвка, судейство.
+            </p>
+          </div>
+        </AnimatedSection>
+        
+        <AnimatedSection delay={0.1}>
+          <div className="h-1.5 w-full bg-gradient-to-r from-white via-red-600 to-black mb-14 rounded-full shadow-inner"></div>
+        </AnimatedSection>
 
         {/* Статистика */}
-        <div className="grid gap-4 grid-cols-2 md:grid-cols-4 text-center mb-14">
-          {[
-            { value: '256+', label: 'Клубов' },
-            { value: '18+', label: 'Федераций' },
-            { value: '420+', label: 'Турниров' },
-            { value: '98%', label: 'Одобрение' },
-          ].map((stat, i) => (
-            <div
-              key={i}
-              className="bg-black/60 border border-red-900/30 rounded-lg p-4 backdrop-blur-sm hover:border-red-600/50 transition"
-            >
-              <div className="text-2xl font-black text-red-400">{stat.value}</div>
-              <div className="text-gray-400 text-xs mt-1">{stat.label}</div>
-            </div>
-          ))}
-        </div>
+        <AnimatedSection delay={0.2}>
+          <div className="grid gap-4 grid-cols-2 md:grid-cols-4 text-center mb-14">
+            {[
+              { value: '256+', label: 'Клубов' },
+              { value: '18+', label: 'Федераций' },
+              { value: '420+', label: 'Турниров' },
+              { value: '98%', label: 'Одобрение' },
+            ].map((stat, i) => (
+              <div
+                key={i}
+                className="bg-black/60 border border-red-900/30 rounded-lg p-4 backdrop-blur-sm hover:border-red-600/50 transition"
+              >
+                <div className="text-2xl font-black text-red-400">{stat.value}</div>
+                <div className="text-gray-400 text-xs mt-1">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </AnimatedSection>
 
         {/* Список событий */}
-        <div className="mb-8 flex items-center justify-between">
-          <h3 className="text-2xl font-bold text-white">Ближайшие события</h3>
-          <Link
-            href="/calendar"
-            className="text-red-400 text-sm group hover:text-red-300 transition"
-          >
-            Полный календарь{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1">
-              →
-            </span>
-          </Link>
-        </div>
+        <AnimatedSection delay={0.3}>
+          <div className="mb-8 flex items-center justify-between">
+            <h3 className="text-2xl font-bold text-white">Ближайшие события</h3>
+            <Link
+              href="/calendar"
+              className="text-red-400 text-sm group hover:text-red-300 transition"
+            >
+              Полный календарь{' '}
+              <span className="inline-block transition-transform group-hover:translate-x-1">
+                →
+              </span>
+            </Link>
+          </div>
+        </AnimatedSection>
 
         {events.length === 0 ? (
-          <div className="text-center py-20 bg-black/40 rounded-xl border border-red-900/20">
-            <div className="w-16 h-16 mx-auto mb-6 bg-gray-800 rounded flex items-center justify-center">
-              <svg className="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
+          <AnimatedSection delay={0.4}>
+            <div className="text-center py-20 bg-black/40 rounded-xl border border-red-900/20">
+              <div className="w-16 h-16 mx-auto mb-6 bg-gray-800 rounded flex items-center justify-center">
+                <svg className="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <p className="text-gray-400 text-lg">Нет запланированных мероприятий</p>
             </div>
-            <p className="text-gray-400 text-lg">Нет запланированных мероприятий</p>
-          </div>
+          </AnimatedSection>
         ) : (
           <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            {events.map((event) => (
-              <div
-                key={event.id}
-                className="group bg-black/60 border border-red-900/30 hover:border-red-500/60 rounded-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-red-500/10 backdrop-blur-sm"
-              >
-                <EventCard event={event} />
-              </div>
+            {events.map((event, i) => (
+              <AnimatedSection key={event.id} delay={0.4 + i * 0.1}>
+                <div
+                  className="group bg-black/60 border border-red-900/30 hover:border-red-500/60 rounded-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-red-500/10 backdrop-blur-sm h-full"
+                >
+                  <EventCard event={event} />
+                </div>
+              </AnimatedSection>
             ))}
           </div>
         )}
