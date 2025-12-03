@@ -18,6 +18,12 @@ export async function getTournaments(organizerId: string): Promise<Tournament[]>
   return allTournaments;
 }
 
+// Получить турнир по ID
+export async function getTournamentById(id: string): Promise<Tournament | null> {
+  const result = db.query(`SELECT * FROM tournaments WHERE id = '${id}'`) as Tournament[];
+  return result.length > 0 ? result[0] : null;
+}
+
 // Получить все турниры для статистики
 export async function getAllTournaments(): Promise<Tournament[]> {
   const result = db.query("SELECT * FROM tournaments");

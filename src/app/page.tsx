@@ -5,7 +5,7 @@ import EventCard from '@/components/EventCard';
 import Link from 'next/link';
 import { AnimatedSection } from '@/components/AnimatedSection';
 import { useState } from 'react';
-import type { Event, EventViewModel } from '@/lib/db';
+import type { Event } from '@/lib/db';
 import { Filters } from '@/components/Filters';
 import { BeltStandards } from '@/components/BeltStandards';
 import { Partners } from '@/components/Partners';
@@ -44,6 +44,10 @@ const allEvents: Event[] = [
     sport: 'boxing',
   },
 ];
+
+export type EventViewModel = Event & {
+  formattedDate: string;
+};
 
 const prepareEventsForDisplay = (events: Event[]): EventViewModel[] => {
   return events.map(event => ({

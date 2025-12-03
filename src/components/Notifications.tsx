@@ -8,6 +8,7 @@ export function Notifications() {
   const notifications = [
     { id: 1, text: 'Ваш турнир одобрен', time: '10 мин назад' },
     { id: 2, text: 'Напоминание: жеребьёвка завтра', time: '2 часа назад' },
+    { id: 3, text: 'Новый боец зарегистрирован в вашем клубе', time: '1 день назад' },
   ];
 
   return (
@@ -21,7 +22,7 @@ export function Notifications() {
           <div className="p-4 border-b border-red-900/30 flex justify-between items-center">
             <h3 className="text-white font-bold">Уведомления</h3>
             <button onClick={() => setOpen(false)} className="text-gray-400 hover:text-white">
-                <X size={18}/>
+              <X size={20} />
             </button>
           </div>
           <div className="max-h-60 overflow-y-auto">
@@ -31,9 +32,6 @@ export function Notifications() {
                 <p className="text-gray-500 text-xs mt-1">{n.time}</p>
               </div>
             ))}
-             {notifications.length === 0 && (
-                <p className="text-center text-gray-500 py-8">Нет новых уведомлений</p>
-             )}
           </div>
         </div>
       )}

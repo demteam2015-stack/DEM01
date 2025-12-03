@@ -1,8 +1,10 @@
+
 import Link from "next/link";
-import type { EventViewModel } from "@/lib/db";
+import type { EventViewModel } from "@/app/page";
 
 export default function EventCard({ event }: { event: EventViewModel }) {
   const isTournament = event.type === 'TOURNAMENT';
+  const eventUrl = isTournament ? `/tournament/${event.id}` : `/certification/apply`;
 
   return (
     <div className="flex flex-col h-full">
@@ -27,7 +29,7 @@ export default function EventCard({ event }: { event: EventViewModel }) {
 
         <div className="mt-6 flex justify-end mt-auto pt-4">
           <Link
-            href={`/events/${event.id}`}
+            href={eventUrl}
             className="text-red-400 font-bold text-xs hover:underline"
           >
             Подробнее и регистрация →
