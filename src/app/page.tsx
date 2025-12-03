@@ -7,10 +7,16 @@ import { AnimatedSection } from '@/components/AnimatedSection';
 import { useState } from 'react';
 import type { Event } from '@/lib/db';
 import { Filters } from '@/components/Filters';
-import { PrintCalendarButton } from '@/components/PrintCalendarButton';
 import { BeltStandards } from '@/components/BeltStandards';
 import { Partners } from '@/components/Partners';
 import { MobileMenu } from '@/components/MobileMenu';
+import dynamic from 'next/dynamic';
+
+const PrintCalendarButton = dynamic(
+  () => import('@/components/PrintCalendarButton').then(mod => mod.PrintCalendarButton),
+  { ssr: false }
+);
+
 
 // Временные mock-данные
 const allEvents: Event[] = [
