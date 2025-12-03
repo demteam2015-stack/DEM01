@@ -5,12 +5,14 @@ import EventCard from '@/components/EventCard';
 import Link from 'next/link';
 import { AnimatedSection } from '@/components/AnimatedSection';
 import { useState } from 'react';
-import type { Event } from '@/lib/db';
+import type { Event, EventViewModel } from '@/lib/db';
 import { Filters } from '@/components/Filters';
 import { BeltStandards } from '@/components/BeltStandards';
 import { Partners } from '@/components/Partners';
 import { MobileMenu } from '@/components/MobileMenu';
 import dynamic from 'next/dynamic';
+import { format } from 'date-fns';
+import { ru } from 'date-fns/locale';
 
 const PrintCalendarButton = dynamic(
   () => import('@/components/PrintCalendarButton').then(mod => mod.PrintCalendarButton),
@@ -43,6 +45,13 @@ const allEvents: Event[] = [
   },
 ];
 
+const prepareEventsForDisplay = (events: Event[]): EventViewModel[] => {
+  return events.map(event => ({
+    ...event,
+    formattedDate: format(new Date(event.date), "dd MMMM yyyy 'в' HH:mm", { locale: ru })
+  }));
+};
+
 export default function Home() {
   const [events, setEvents] = useState(allEvents);
 
@@ -54,6 +63,8 @@ export default function Home() {
     }
     setEvents(filtered);
   };
+  
+  const displayEvents = prepareEventsForDisplay(events);
 
 
   return (
@@ -159,7 +170,7 @@ export default function Home() {
           </div>
         </AnimatedSection>
 
-        {events.length === 0 ? (
+        {displayEvents.length === 0 ? (
           <AnimatedSection delay={0.4}>
             <div className="text-center py-20 bg-black/40 rounded-xl border border-red-900/20">
               <div className="w-16 h-16 mx-auto mb-6 bg-gray-800 rounded flex items-center justify-center">
@@ -173,7 +184,7 @@ export default function Home() {
         ) : (
            <AnimatedSection>
             <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-              {events.map((event, i) => (
+              {displayEvents.map((event, i) => (
                 <AnimatedSection key={event.id} delay={i * 0.1}>
                   <div className="group bg-black/60 border border-red-900/30 hover:border-red-500/60 rounded-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-red-500/10 backdrop-blur-sm h-full">
                     <EventCard event={event} />

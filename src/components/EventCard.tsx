@@ -1,12 +1,8 @@
 import Link from "next/link";
-import { format } from "date-fns";
-import { ru } from "date-fns/locale";
-import type { Event } from "@/lib/db";
+import type { EventViewModel } from "@/lib/db";
 
-export default function EventCard({ event }: { event: Event }) {
+export default function EventCard({ event }: { event: EventViewModel }) {
   const isTournament = event.type === 'TOURNAMENT';
-  // Принимаем дату как строку и парсим ее, чтобы избежать проблем с гидратацией
-  const date = new Date(event.date);
 
   return (
     <div className="flex flex-col h-full">
@@ -21,7 +17,7 @@ export default function EventCard({ event }: { event: Event }) {
         <div className="space-y-3 text-sm text-gray-400">
           <p className="flex items-start gap-2">
             <span className="text-red-500 mt-0.5">📅</span>
-            <span>{format(date, "dd MMMM yyyy 'в' HH:mm", { locale: ru })}</span>
+            <span>{event.formattedDate}</span>
           </p>
           <p className="flex items-start gap-2">
             <span className="text-red-500 mt-0.5">📍</span>

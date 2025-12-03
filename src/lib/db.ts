@@ -4,7 +4,11 @@
 export type Event = {
   id: string;
   title: string;
-  date: string; // Используем string для избежания ошибок гидратации
+  date: string; // ISO string
   location: string;
   type: 'TOURNAMENT' | 'CERTIFICATION';
+};
+
+export type EventViewModel = Event & {
+  formattedDate: string;
 };
