@@ -7,8 +7,25 @@ export type Event = {
   date: string; // ISO string
   location: string;
   type: 'TOURNAMENT' | 'CERTIFICATION';
+  sport: string;
+  events?: TournamentEvent[]; // Optional array of sub-events
 };
 
 export type EventViewModel = Event & {
   formattedDate: string;
+};
+
+export type Tournament = {
+  id: string;
+  title: string;
+  date: string; // ISO string
+  location: string;
+  events: TournamentEvent[];
+};
+
+export type TournamentEvent = {
+  id: string;
+  title: string;
+  category: string;
+  weightClass: string;
 };

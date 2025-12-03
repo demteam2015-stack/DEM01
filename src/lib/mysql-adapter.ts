@@ -1,4 +1,3 @@
-
 /**
  * Псевдо-SQL адаптер, работающий через localStorage
  * Имитирует простые SQL-запросы: SELECT, INSERT, UPDATE, DELETE
@@ -28,13 +27,11 @@ class MySQLAdapter {
         { id: "3", name: "Елена Волкова", club: "Академия Бокса", age: 28, discipline: "Бокс", rating: 1550 },
         { id: "4", name: "Дмитрий Новиков", club: "Gracie Barra", age: 30, discipline: "BJJ", rating: 1600, belt: "Чёрный пояс" },
         { id: "5", name: "Светлана Кузнецова", club: "Школа Дзюдо 'Иппон'", age: 19, discipline: "Judo", rating: 1300, belt: "Коричневый" },
-        { id: "6", name: "Максим Королёв", club: "Кёкусин-клуб 'Щит'", age: 22, discipline: "Кекусин", rating: 1480, belt: "Чёрный пояс" },
       ];
     }
-     if (!data.tournaments) {
+    if (!data.tournaments) {
         data.tournaments = [];
-     }
-
+    }
     localStorage.setItem(this.storageKey, JSON.stringify(data));
   }
 
@@ -67,120 +64,133 @@ class MySQLAdapter {
         row[col] = values[i];
       });
 
-      // Генерируем ID
-      row.id = Date.now().toString();
+      if (!row.id) {
+        row.id = Date.now().toString();
+      }
 
-      // Сохраняем
-      db[table] = [...tableData, row];
+      tableData.push(row);
+      db[table] = tableData;
       this.saveData(db);
-
       return { insertedId: row.id };
     }
 
-    // === UPDATE table SET col = val WHERE id = ? ===
-    if (lowerSQL.startsWith("update ")) {
-      const { table, set, where } = this.parseUpdate(sql);
-      const tableData = db[table] || [];
-      let changed = 0;
+    // === UPDATE table SET ... WHERE ... ===
+    if (lowerSQL.startsWith('update')) {
+        const { table, updates, where } = this.parseUpdate(sql);
+        const tableData = db[table] || [];
+        let changedRows = 0;
 
-      const updated = tableData.map((row) => {
-        if (row.id === where.id) {
-          Object.entries(set).forEach(([key, value]) => {
-            row[key] = value;
-          });
-          changed++;
-        }
-        return row;
-      });
+        const updatedTableData = tableData.map(row => {
+            if (row[where.key] === where.value) {
+                changedRows++;
+                return { ...row, ...updates };
+            }
+            return row;
+        });
 
-      db[table] = updated;
-      this.saveData(db);
-
-      return { changedRows: changed };
+        db[table] = updatedTableData;
+        this.saveData(db);
+        return { changedRows };
     }
 
-    // === DELETE FROM table WHERE id = ? ===
-    if (lowerSQL.startsWith("delete from ")) {
-      const { table, where } = this.parseDelete(sql);
-      const tableData = db[table] || [];
+    // === DELETE FROM table WHERE ... ===
+    if (lowerSQL.startsWith('delete from')) {
+        const { table, where } = this.parseDelete(sql);
+        const tableData = db[table] || [];
+        let changedRows = 0;
 
-      const filtered = tableData.filter((row) => row.id !== where.id);
-      const deletedCount = tableData.length - filtered.length;
+        const updatedTableData = tableData.filter(row => {
+            const shouldKeep = row[where.key] !== where.value;
+            if (!shouldKeep) {
+                changedRows++;
+            }
+            return shouldKeep;
+        });
 
-      db[table] = filtered;
-      this.saveData(db);
-
-      return { changedRows: deletedCount };
+        db[table] = updatedTableData;
+        this.saveData(db);
+        return { changedRows };
     }
 
-    console.warn("Unsupported SQL:", sql);
     return [];
   }
 
-  // === Парсеры SQL ===
-
   private parseTableName(sql: string, type: "select" | "insert" | "update" | "delete"): string {
-    const regex = type === "select" 
-      ? /select \* from ([a-z_]+)/i 
-      : type === "insert" 
-        ? /insert into ([a-z_]+)/i
-        : type === "update"
-          ? /update ([a-z_]+)/i
-          : /delete from ([a-z_]+)/i;
-    const match = sql.match(regex);
-    return match ? match[1] : "";
+    if (type === "select") {
+      return sql.substring("select * from ".length).split(" ")[0];
+    } else if (type === "update") {
+        return sql.split(' ')[1];
+    } else if (type === "delete") {
+        return sql.split(' ')[2];
+    }
+    return "";
   }
 
-  private parseInsert(sql: string): { table: string; columns: string[]; values: any[] } {
-    const tableMatch = sql.match(/insert into ([a-z_]+)/i);
+  private parseInsert(sql: string): { table: string, columns: string[], values: any[] } {
+    const tableMatch = sql.match(/insert into (\w+)/i);
     const table = tableMatch ? tableMatch[1] : "";
 
-    const columnsMatch = sql.match(/\(([^)]+)\)\s*values/i);
-    const columns = columnsMatch ? columnsMatch[1].split(",").map(c => c.trim()) : [];
+    const columnsMatch = sql.match(/\((.*?)\)/);
+    const columns = columnsMatch ? columnsMatch[1].split(',').map(s => s.trim()) : [];
 
-    const valuesMatch = sql.match(/values\s*\(([^)]+)\)/i);
+    const valuesMatch = sql.match(/values \((.*?)\)/i);
     const valuesStr = valuesMatch ? valuesMatch[1] : "";
-    
-    // Простой парсер значений (поддерживает строки в кавычках и числа)
-    const values = valuesStr.split(",").map(val => {
-      val = val.trim();
-      if (val.startsWith("'") && val.endsWith("'")) {
-        return val.slice(1, -1);
-      }
-      if (!isNaN(+val)) return +val;
-      return val;
+
+    // This is a very basic parser. It doesn't handle strings with commas.
+    const values = valuesStr.split(',').map(s => {
+        const trimmed = s.trim();
+        if (trimmed.startsWith("'") && trimmed.endsWith("'")) {
+            return trimmed.substring(1, trimmed.length - 1);
+        }
+        if (!isNaN(Number(trimmed))) {
+            return Number(trimmed);
+        }
+        return trimmed;
     });
 
     return { table, columns, values };
   }
 
-  private parseUpdate(sql: string): { table: string; set: Record<string, any>; where: { id: string } } {
-    const table = this.parseTableName(sql, "update");
+    private parseUpdate(sql: string): { table: string, updates: Record<string, any>, where: { key: string, value: any } } {
+        const table = this.parseTableName(sql, "update");
+        const setClause = sql.substring(sql.toLowerCase().indexOf('set') + 3, sql.toLowerCase().indexOf('where')).trim();
+        const whereClause = sql.substring(sql.toLowerCase().indexOf('where') + 5).trim();
 
-    const setMatch = sql.match(/set\s+(.*)\s+where/i);
-    const setPart = setMatch ? setMatch[1] : "";
-    
-    const set: Record<string, any> = {};
-    setPart.split(',').forEach(part => {
-        const [col, val] = part.split("=").map(s => s.trim());
-        if (col && val) {
-            set[col] = val.startsWith("'") ? val.slice(1, -1) : isNaN(+val) ? val : +val;
+        const updates: Record<string, any> = {};
+        setClause.split(',').forEach(part => {
+            const [key, value] = part.split('=').map(s => s.trim());
+            updates[key] = this.parseValue(value);
+        });
+
+        const [whereKey, whereValue] = whereClause.split('=').map(s => s.trim());
+
+        return {
+            table,
+            updates,
+            where: { key: whereKey, value: this.parseValue(whereValue) }
+        };
+    }
+
+    private parseDelete(sql: string): { table: string, where: { key: string, value: any } } {
+        const table = this.parseTableName(sql, "delete");
+        const whereClause = sql.substring(sql.toLowerCase().indexOf('where') + 5).trim();
+        const [whereKey, whereValue] = whereClause.split('=').map(s => s.trim());
+
+        return {
+            table,
+            where: { key: whereKey, value: this.parseValue(whereValue) }
+        };
+    }
+
+    private parseValue(value: string): any {
+        if (value.startsWith("'") && value.endsWith("'")) {
+            return value.substring(1, value.length - 1);
         }
-    });
-
-    const whereMatch = sql.match(/where\s+id\s*=\s*(['"]?)(\w+)\1/i);
-    const whereId = whereMatch ? whereMatch[2] : "";
-
-    return { table, set, where: { id: whereId } };
-  }
-
-  private parseDelete(sql: string): { table: string; where: { id: string } } {
-    const table = this.parseTableName(sql, "delete");
-    const whereMatch = sql.match(/where\s+id\s*=\s*(['"]?)(\w+)\1/i);
-    const whereId = whereMatch ? whereMatch[2] : "";
-    return { table, where: { id: whereId } };
-  }
+        if (!isNaN(Number(value))) {
+            return Number(value);
+        }
+        return value;
+    }
 }
 
-// Экспортируем один экземпляр
 export const db = new MySQLAdapter();

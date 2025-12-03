@@ -12,6 +12,10 @@ import { Partners } from '@/components/Partners';
 import { MobileMenu } from '@/components/MobileMenu';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
+import { RazryadSystem } from '@/components/RazryadSystem';
+import { GosuslugiAuth } from '@/components/GosuslugiAuth';
+import { Notifications } from '@/components/Notifications';
+
 
 // Временные mock-данные
 const allEvents: Event[] = [
@@ -21,6 +25,7 @@ const allEvents: Event[] = [
     date: '2024-12-20T10:00:00',
     location: 'г. Москва, МЦБИ',
     type: 'TOURNAMENT',
+    sport: 'sambo',
   },
   {
     id: '2',
@@ -28,6 +33,7 @@ const allEvents: Event[] = [
     date: '2024-11-25T12:00:00',
     location: 'г. Санкт-Петербург, Федерация Айкидо',
     type: 'CERTIFICATION',
+    sport: 'judo',
   },
   {
     id: '3',
@@ -35,6 +41,7 @@ const allEvents: Event[] = [
     date: '2025-01-18T09:00:00',
     location: 'г. Казань, "Центр Бокса"',
     type: 'TOURNAMENT',
+    sport: 'boxing',
   },
 ];
 
@@ -87,16 +94,9 @@ export default function Home() {
           </div>
 
           <div className="hidden md:flex items-center gap-4 mt-4 sm:mt-0">
-            {/* Кнопка: Войти / ЛК — с анимацией */}
-            <Link
-              href="/dashboard"
-              className="group relative px-4 py-2.5 border border-red-600/50 text-red-100 hover:text-white font-medium text-sm rounded transition-colors duration-300"
-            >
-              <span className="relative z-10">Личный кабинет</span>
-              <span className="absolute inset-0 rounded bg-gradient-to-r from-red-700/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></span>
-              <span className="absolute inset-0 rounded border border-transparent group-hover:border-red-500/50 transition duration-300 pointer-events-none"></span>
-            </Link>
-
+            <Notifications />
+            <GosuslugiAuth />
+            
             {/* Кнопка: Создать событие — с подсветкой и scale */}
             <Link
               href="/events/create"
@@ -197,6 +197,7 @@ export default function Home() {
         )}
         
         <BeltStandards />
+        <RazryadSystem />
         <Partners />
 
       </main>
