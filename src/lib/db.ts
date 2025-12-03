@@ -1,13 +1,49 @@
-import { PrismaClient } from '@prisma/client';
+import Link from "next/link";
+import { format } from "date-fns";
+import { ru } from "date-fns/locale";
 
-// Объявляем глобальную переменную для хранения инстанса Prisma
-declare global {
-  var prisma: PrismaClient | undefined;
-}
+// Обновляем тип, чтобы он соответствовал данным из page.tsx
+type Event = {
+  id: string;
+  title: string;
+  date: Date;
+  location: string;
+  type: 'TOURNAMENT' | 'CERTIFICATION';
+};
 
-// Создаем инстанс Prisma, переиспользуя существующий в режиме разработки
-export const prisma = global.prisma || new PrismaClient();
+export default function EventCard({ event }: { event: Event }) {
+  const isTournament = event.type === 'TOURNAMENT';
+  const date = new Date(event.date);
 
-if (process.env.NODE_ENV !== 'production') {
-  global.prisma = prisma;
+  return (
+    <>
+      <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-3/4 py-1.5 text-center text-xs font-bold uppercase text-white rounded-b-lg ${isTournament ? "bg-red-700" : "bg-blue-700"}`}>
+        {isTournament ? "🏆 Турнир" : "📜 Аттестация"}
+      </div>
+
+      <div className="pt-10">
+        <h3 className="text-lg font-black text-white mb-4 line-clamp-2 h-14">{event.title}</h3>
+        
+        <div className="space-y-2 text-sm text-gray-400">
+          <p className="flex items-center gap-2">
+            <span className="text-red-500">📅</span>
+            {format(date, "dd MMMM yyyy", { locale: ru })}
+          </p>
+          <p className="flex items-center gap-2">
+            <span className="text-red-500">📍</span>
+            {event.location}
+          </p>
+        </div>
+
+        <div className="mt-5 flex justify-end">
+          <Link
+            href={`/events/${event.id}`}
+            className="text-red-400 font-bold text-xs hover:underline"
+          >
+            Подробнее →
+          </Link>
+        </div>
+      </div>
+    </>
+  );
 }

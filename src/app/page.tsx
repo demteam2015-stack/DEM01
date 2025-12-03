@@ -1,12 +1,41 @@
-import { prisma } from '@/lib/db';
 import EventCard from '@/components/EventCard';
 import { DemTeamLogo } from '@/components/logo';
 import Link from 'next/link';
 
+// Определяем тип для событий, чтобы сохранить структуру
+type Event = {
+  id: string;
+  title: string;
+  date: Date;
+  location: string;
+  type: 'TOURNAMENT' | 'CERTIFICATION';
+};
+
 export default async function Home() {
-  const events = await prisma.event.findMany({
-    orderBy: { date: 'asc' },
-  });
+  // Mock-данные вместо обращения к Prisma
+  const events: Event[] = [
+    {
+      id: '1',
+      title: 'Открытый Чемпионат по Киокушинкай Каратэ "Кубок Мужества"',
+      date: new Date('2024-12-15T10:00:00Z'),
+      location: 'г. Москва, СК "Олимпийский"',
+      type: 'TOURNAMENT',
+    },
+    {
+      id: '2',
+      title: 'Аттестация на пояса по Бразильскому Джиу-Джитсу',
+      date: new Date('2024-11-30T12:00:00Z'),
+      location: 'г. Санкт-Петербург, клуб "Gracie Barra"',
+      type: 'CERTIFICATION',
+    },
+    {
+      id: '3',
+      title: 'Вечер профессионального бокса "Нокаут"',
+      date: new Date('2025-01-25T19:00:00Z'),
+      location: 'г. Екатеринбург, "Арена-Экспо"',
+      type: 'TOURNAMENT',
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-black text-gray-100">

@@ -1,10 +1,18 @@
 import Link from "next/link";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
-import type { Event } from "@prisma/client";
+
+// Обновляем тип, чтобы он соответствовал данным из page.tsx
+type Event = {
+  id: string;
+  title: string;
+  date: Date;
+  location: string;
+  type: 'TOURNAMENT' | 'CERTIFICATION';
+};
 
 export default function EventCard({ event }: { event: Event }) {
-  const isTournament = event.type !== 'CERTIFICATION';
+  const isTournament = event.type === 'TOURNAMENT';
   const date = new Date(event.date);
 
   return (

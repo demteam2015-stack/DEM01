@@ -4,19 +4,20 @@
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["dataProxy"]
+  binaryTargets   = ["native", "rhel-openssl-1.0.x"]
 }
 
 datasource db {
-  url = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 model Event {
-  id          String   @id @default(cuid())
-  title       String
-  description String?
-  date        DateTime
-  location    String
-  type        String   @default("TOURNAMENT") // e.g., TOURNAMENT, CERTIFICATION
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(cuid())
+  title     String
+  date      DateTime
+  location  String
+  type      String   @default("TOURNAMENT") // e.g., TOURNAMENT, CERTIFICATION
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
