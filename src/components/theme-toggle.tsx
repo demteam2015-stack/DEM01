@@ -1,27 +1,22 @@
 'use client';
 
-import * as React from 'react';
-import { Moon, Sun } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useTheme } from 'next-themes';
+import { useEffect, useState } from 'react';
 
-// A placeholder for the theme toggle button functionality
 export function ThemeToggleButton() {
-  const [theme, setTheme] = React.useState('dark');
+  const [mounted, setMounted] = useState(false);
+  const { theme, setTheme } = useTheme();
 
-  const toggleTheme = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light');
-    // In a real app, you'd also change the class on the `html` element
-    // document.documentElement.classList.toggle('dark');
-  };
+  useEffect(() => setMounted(true), []);
+
+  if (!mounted) return <div className="w-8 h-8"></div>;
 
   return (
-    <Button variant="outline" size="icon" onClick={toggleTheme}>
-      {theme === 'dark' ? (
-        <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all" />
-      ) : (
-        <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all" />
-      )}
-      <span className="sr-only">Toggle theme</span>
-    </Button>
+    <button
+      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+      className="p-2 rounded border border-red-900/40 text-red-200 hover:text-red-100 hover:border-red-500 transition"
+    >
+      {theme === 'dark' ? '☀️' : '🌙'}
+    </button>
   );
 }

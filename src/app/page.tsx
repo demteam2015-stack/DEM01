@@ -1,18 +1,19 @@
 
+'use client'
+
 import EventCard from '@/components/EventCard';
 import Link from 'next/link';
 import { AnimatedSection } from '@/components/AnimatedSection';
+import { useState } from 'react';
+import type { Event } from '@/lib/db';
+import { Filters } from '@/components/Filters';
+import { PrintCalendarButton } from '@/components/PrintCalendarButton';
+import { BeltStandards } from '@/components/BeltStandards';
+import { Partners } from '@/components/Partners';
+import { MobileMenu } from '@/components/MobileMenu';
 
-// Временные mock-данные из-за проблем с Prisma в этой среде
-type Event = {
-  id: string;
-  title: string;
-  date: Date;
-  location: string;
-  type: 'TOURNAMENT' | 'CERTIFICATION';
-};
-
-const events: Event[] = [
+// Временные mock-данные
+const allEvents: Event[] = [
   {
     id: '1',
     title: 'Всероссийский турнир по самбо "Надежды России"',
@@ -36,7 +37,18 @@ const events: Event[] = [
   },
 ];
 
-export default async function Home() {
+export default function Home() {
+  const [events, setEvents] = useState(allEvents);
+
+  const handleFilter = (filters: any) => {
+    // Эта логика — просто заглушка. В реальном приложении здесь был бы запрос к API.
+    let filtered = allEvents;
+    if (filters.sport) {
+        // фиктивная фильтрация
+    }
+    setEvents(filtered);
+  };
+
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
@@ -64,7 +76,7 @@ export default async function Home() {
             </p>
           </div>
 
-          <div className="flex items-center gap-4 mt-4 sm:mt-0">
+          <div className="hidden md:flex items-center gap-4 mt-4 sm:mt-0">
             {/* Кнопка: Войти / ЛК — с анимацией */}
             <Link
               href="/dashboard"
@@ -86,6 +98,7 @@ export default async function Home() {
               <span className="absolute inset-0 rounded opacity-0 group-hover:opacity-20 bg-white transition duration-300"></span>
             </Link>
           </div>
+          <MobileMenu />
         </div>
       </header>
 
@@ -127,20 +140,16 @@ export default async function Home() {
             ))}
           </div>
         </AnimatedSection>
+        
+        <AnimatedSection delay={0.3}>
+          <Filters onFilter={handleFilter} />
+        </AnimatedSection>
 
         {/* Список событий */}
         <AnimatedSection delay={0.3}>
           <div className="mb-8 flex items-center justify-between">
             <h3 className="text-2xl font-bold text-white">Ближайшие события</h3>
-            <Link
-              href="/calendar"
-              className="text-red-400 text-sm group hover:text-red-300 transition"
-            >
-              Полный календарь{' '}
-              <span className="inline-block transition-transform group-hover:translate-x-1">
-                →
-              </span>
-            </Link>
+            <PrintCalendarButton events={events} />
           </div>
         </AnimatedSection>
 
@@ -156,18 +165,22 @@ export default async function Home() {
             </div>
           </AnimatedSection>
         ) : (
-          <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            {events.map((event, i) => (
-              <AnimatedSection key={event.id} delay={0.4 + i * 0.1}>
-                <div
-                  className="group bg-black/60 border border-red-900/30 hover:border-red-500/60 rounded-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-red-500/10 backdrop-blur-sm h-full"
-                >
-                  <EventCard event={event} />
-                </div>
-              </AnimatedSection>
-            ))}
-          </div>
+           <AnimatedSection>
+            <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+              {events.map((event, i) => (
+                <AnimatedSection key={event.id} delay={i * 0.1}>
+                  <div className="group bg-black/60 border border-red-900/30 hover:border-red-500/60 rounded-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-red-500/10 backdrop-blur-sm h-full">
+                    <EventCard event={event} />
+                  </div>
+                </AnimatedSection>
+              ))}
+            </div>
+          </AnimatedSection>
         )}
+        
+        <BeltStandards />
+        <Partners />
+
       </main>
 
       {/* Футер */}
