@@ -1,9 +1,11 @@
 'use client';
 
-import { getTournaments } from '@/lib/tournaments-api';
-import TournamentCard from '@/components/TournamentCard';
-import { useEffect, useState } from 'react';
-import type { Tournament } from '@/lib/tournaments-api';
+import { getTournaments } from "@/lib/tournaments-api";
+import EventCard from "@/components/EventCard";
+import { useEffect, useState } from "react";
+import type { Tournament } from "@/lib/tournaments-api";
+import Image from "next/image";
+import placeholderImages from "@/lib/placeholder-images.json";
 
 export default function Home() {
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
@@ -16,71 +18,112 @@ export default function Home() {
     loadTournaments();
   }, []);
 
+
+  // Только ближайшие 3 события
+  const upcoming = tournaments
+    .filter((t) => new Date(t.date) >= new Date())
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    .slice(0, 3);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-red-950 text-white">
-      {/* Абстрактные фоны */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/3 right-0 w-96 h-96 bg-red-600/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-yellow-500/5 rounded-full blur-3xl"></div>
-      </div>
-
-      <div className="relative z-10">
-        {/* Header */}
-        <header className="px-8 py-6 flex justify-between items-center border-b border-slate-800 backdrop-blur-md bg-black/40">
-          <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 bg-red-600 rounded-full"></div>
-            <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-400 to-yellow-400">
-              FIGHTHUB
-            </span>
-          </div>
-          <nav className="hidden md:flex space-x-8 text-sm">
-            <a href="/events" className="hover:text-red-400 transition">Турниры</a>
-            <a href="/rules" className="hover:text-red-400 transition">Правила</a>
-            <a href="/contact" className="hover:text-red-400 transition">Контакты</a>
-          </nav>
-          <button className="px-5 py-2 bg-red-600 hover:bg-red-700 rounded-md text-sm font-semibold transition">
-            Войти
-          </button>
-        </header>
-
-        {/* Hero */}
-        <section className="px-8 py-16 text-center max-w-4xl mx-auto">
-          <h1 className="text-4xl md:text-6xl font-black leading-tight">
-            Организация <span className="text-red-500">турниров</span> по единоборствам
+    <div className="min-h-screen bg-black text-white">
+      {/* Герой-секция (как на GLORY) */}
+      <section
+        className="relative h-screen flex items-center justify-center text-center text-white"
+      >
+        <Image
+            src={placeholderImages.ringBg.src}
+            alt={placeholderImages.ringBg.alt}
+            fill
+            style={{ objectFit: 'cover' }}
+            priority
+            data-ai-hint="boxing ring"
+        />
+        <div className="absolute inset-0 bg-black/60"></div>
+        <div className="relative z-10 px-6">
+          <h1 className="text-6xl md:text-8xl font-black uppercase tracking-wider bg-gradient-to-r from-red-500 to-red-700 bg-clip-text text-transparent">
+            FIGHT PLATFORM
           </h1>
-          <p className="text-slate-300 mt-6 text-lg leading-relaxed">
-            Платформа для проведения соревнований по MMA, боксу, дзюдо, БЖЖ.  
-            Регистрация, распределение по весовым категориям, жеребьёвка, сертификаты.
+          <p className="text-xl md:text-2xl mt-6 text-gray-200 max-w-3xl mx-auto">
+            Единая платформа для проведения турниров, аттестаций и рейтинга бойцов по всем стилям единоборств
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-10">
-            <a href="/events" className="px-8 py-3 bg-red-600 hover:bg-red-700 rounded-lg font-bold transition text-center">
-              🏆 Посмотреть турниры
+          <div className="mt-12 space-x-6">
+            <a
+              href="/events"
+              className="inline-block bg-red-600 hover:bg-red-700 px-8 py-4 text-lg font-bold uppercase tracking-wider transition"
+            >
+              Смотреть события
             </a>
-            <a href="/create" className="px-8 py-3 border border-slate-600 hover:border-red-500 rounded-lg font-semibold transition text-center backdrop-blur-sm bg-white/5">
-              ➕ Создать турнир
+            <a
+              href="/ranking"
+              className="inline-block border-2 border-gray-400 hover:border-white px-8 py-4 text-lg font-semibold uppercase tracking-wider transition"
+            >
+              Рейтинг бойцов
             </a>
           </div>
-        </section>
+        </div>
 
-        {/* Tournaments */}
-        <section className="px-8 pb-20">
-          <h2 className="text-3xl font-bold text-center mb-12">Ближайшие соревнования</h2>
-          {tournaments.length === 0 ? (
-            <p className="text-center text-slate-500">Нет запланированных турниров.</p>
+        {/* Стрелка вниз */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
+        </div>
+      </section>
+
+      {/* Ближайшие события */}
+      <section className="py-20 px-6 bg-gray-900">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-5xl font-black text-center mb-16 tracking-wider">Ближайшие события</h2>
+          {upcoming.length === 0 ? (
+            <p className="text-gray-400 text-center text-xl">Нет запланированных турниров</p>
           ) : (
-            <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto">
-              {tournaments.map((t) => (
-                <TournamentCard key={t.id} tournament={t} />
+            <div className="grid gap-10 md:grid-cols-1 lg:grid-cols-3">
+              {upcoming.map((event) => (
+                <EventCard key={event.id} event={event} />
               ))}
             </div>
           )}
-        </section>
+          <div className="text-center mt-12">
+            <a
+              href="/events"
+              className="inline-block border-b-2 border-red-600 text-red-400 hover:text-red-300 font-semibold"
+            >
+              Все события →
+            </a>
+          </div>
+        </div>
+      </section>
 
-        {/* Footer */}
-        <footer className="border-t border-slate-800 py-8 text-center text-sm text-slate-500">
-          <p>&copy; {new Date().getFullYear()} FIGHTHUB. Система управления турнирами.</p>
-        </footer>
-      </div>
+      {/* Преимущества */}
+      <section className="py-20 px-6 bg-black">
+        <div className="max-w-5xl mx-auto text-center">
+          <h2 className="text-4xl font-bold mb-12">Почему выбирают нас?</h2>
+          <div className="grid md:grid-cols-3 gap-12 text-gray-300">
+            <div>
+              <div className="text-6xl mb-4">🏆</div>
+              <h3 className="text-2xl font-bold mb-2">Официальные турниры</h3>
+              <p>Сертифицированные соревнования с международной системой судейства.</p>
+            </div>
+            <div>
+              <div className="text-6xl mb-4">📜</div>
+              <h3 className="text-2xl font-bold mb-2">Аттестации</h3>
+              <p>Удобная регистрация на пояса и кю/даны с подтверждением в реестре.</p>
+            </div>
+            <div>
+              <div className="text-6xl mb-4">📊</div>
+              <h3 className="text-2xl font-bold mb-2">Рейтинг и статистика</h3>
+              <p>Объективный рейтинг бойцов по дисциплинам и возрастным категориям.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Подвал */}
+      <footer className="py-12 px-6 text-center text-gray-600 bg-gray-950 border-t border-gray-800">
+        <p>&copy; {new Date().getFullYear()} Fight Platform. Все права защищены.</p>
+        <p className="mt-2 text-sm">Поддержка: support@fightplatform.ru</p>
+      </footer>
     </div>
   );
 }

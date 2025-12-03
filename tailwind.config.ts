@@ -8,7 +8,12 @@ export default {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ['Open Sans', 'sans-serif'],
+        display: ['Bebas Neue', 'sans-serif'],
+      },
+    },
   },
   plugins: [],
 } satisfies Config;
