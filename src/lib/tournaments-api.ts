@@ -8,6 +8,7 @@ export type Tournament = {
   discipline: string;
   maxParticipants: number;
   registeredCount: number;
+  status: 'upcoming' | 'registration_open' | 'completed';
 };
 
 // Получить все турниры
@@ -17,10 +18,10 @@ export async function getTournaments(): Promise<Tournament[]> {
 
 // Создать турнир
 export async function createTournament(data: Omit<Tournament, "id" | "registeredCount">) {
-  const { title, date, location, discipline, maxParticipants } = data;
+  const { title, date, location, discipline, maxParticipants, status } = data;
   return db.query(
-    `INSERT INTO tournaments (title, date, location, discipline, maxParticipants, registeredCount) 
-     VALUES ('${title}', '${date}', '${location}', '${discipline}', ${maxParticipants}, 0)`
+    `INSERT INTO tournaments (title, date, location, discipline, maxParticipants, registeredCount, status) 
+     VALUES ('${title}', '${date}', '${location}', '${discipline}', ${maxParticipants}, 0, '${status}')`
   );
 }
 
