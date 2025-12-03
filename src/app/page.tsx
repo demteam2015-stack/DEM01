@@ -1,21 +1,33 @@
-'use client';
-
-import { useEffect, useState } from "react";
+import { getServerSession } from 'next-auth';
+import { authOptions } from './api/auth/[...nextauth]/route';
 import { getTournaments } from '@/lib/tournaments-api';
-import type { Tournament } from '@/lib/tournaments-api';
 import TournamentCard from '@/components/TournamentCard';
 
-export default function Home() {
-  const [tournaments, setTournaments] = useState<Tournament[]>([]);
+export default async function Home() {
+  const session = await getServerSession(authOptions);
+  // @ts-ignore
+  const organizerId = session?.user?.id;
+  const tournaments = organizerId ? await getTournaments(organizerId) : [];
 
-  useEffect(() => {
-    async function loadTournaments() {
-      const data = await getTournaments();
-      setTournaments(data);
-    }
-    loadTournaments();
-  }, []);
-
+  if (!session) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center p-8 bg-slate-900 rounded-2xl shadow-2xl border border-slate-800">
+          <h2 className="text-3xl font-black text-red-500">🔐 ДОСТУП ОГРАНИЧЕН</h2>
+          <p className="text-slate-400 mt-4 max-w-sm">
+            Это панель управления для организаторов. Пожалуйста, войдите в свою учётную запись, чтобы управлять турнирами.
+          </p>
+          <a
+            href="/login"
+            className="mt-8 inline-block px-8 py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 font-bold text-lg rounded-lg transition transform hover:scale-105 shadow-lg"
+          >
+            ВОЙТИ
+          </a>
+        </div>
+      </div>
+    );
+  }
+  
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden">
       {/* Абстрактные блики */}
@@ -50,19 +62,23 @@ export default function Home() {
               СЕРТИФИКАТЫ
             </a>
           </nav>
+          
+          <div className='flex items-center gap-4'>
+            <span className='text-sm text-slate-300'>Добро пожаловать, {session.user?.name}</span>
+             <a href="/api/auth/signout" className="px-6 py-2.5 bg-gradient-to-r from-yellow-700 to-yellow-800 hover:from-yellow-600 hover:to-yellow-700 text-sm font-bold rounded-lg transition transform hover:scale-105 shadow-lg">
+                ВЫЙТИ
+              </a>
+          </div>
 
-          <button className="px-6 py-2.5 bg-gradient-to-r from-red-700 to-red-800 hover:from-red-600 hover:to-red-700 text-sm font-bold rounded-lg transition transform hover:scale-105 shadow-lg">
-            ВОЙТИ
-          </button>
         </header>
 
         {/* Hero Section */}
         <section className="px-8 lg:px-16 py-20 text-center relative">
           <div className="max-w-5xl mx-auto">
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-black leading-tight tracking-tighter">
-              ПЛАТФОРМА ДЛЯ
+              ПАНЕЛЬ
               <span className="block bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-yellow-400 mt-2">
-                ОРГАНИЗАЦИИ ТУРНИРОВ
+                ОРГАНИЗАТОРА
               </span>
             </h1>
             <p className="text-slate-300 mt-8 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
@@ -100,7 +116,7 @@ export default function Home() {
         {/* Tournaments Grid */}
         <section className="px-8 lg:px-16 py-20">
           <h2 className="text-3xl md:text-4xl font-black text-center mb-16 tracking-tight">
-            БЛИЖАЙШИЕ СОРЕВНОВАНИЯ
+            ВАШИ ТУРНИРЫ
           </h2>
 
           {tournaments.length === 0 ? (
@@ -108,7 +124,7 @@ export default function Home() {
               <div className="w-24 h-24 mx-auto mb-6 bg-slate-800 rounded-full flex items-center justify-center border-2 border-red-900/40">
                 <span className="text-4xl">📅</span>
               </div>
-              <p className="text-slate-500 text-xl">Нет запланированных турниров</p>
+              <p className="text-slate-500 text-xl">У вас нет запланированных турниров</p>
               <p className="text-slate-600 text-sm mt-2">Организуйте первое соревнование уже сегодня</p>
             </div>
           ) : (
