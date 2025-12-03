@@ -40,8 +40,10 @@ class MySQLAdapter {
 
   constructor() {
     // При первом создании экземпляра, убедимся, что данные есть
-    const db = this.getData();
-    this.saveData(db);
+    if (typeof window !== 'undefined') {
+        const db = this.getData();
+        this.saveData(db);
+    }
   }
 
   // Основной метод — эмулируем SQL
