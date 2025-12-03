@@ -1,3 +1,4 @@
+
 import { db } from "./mysql-adapter";
 
 export type Tournament = {
@@ -16,6 +17,12 @@ export type Tournament = {
 export async function getTournaments(organizerId: string): Promise<Tournament[]> {
   const allTournaments = db.query("SELECT * FROM tournaments") as Tournament[];
   return allTournaments.filter(t => t.organizerId === organizerId);
+}
+
+// Получить все турниры для статистики
+export async function getAllTournaments(): Promise<Tournament[]> {
+  const result = db.query("SELECT * FROM tournaments");
+  return Array.isArray(result) ? result as Tournament[] : [];
 }
 
 // Создать турнир с привязкой к организатору

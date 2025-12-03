@@ -1,3 +1,4 @@
+
 /**
  * Псевдо-SQL адаптер, работающий через localStorage
  * Имитирует простые SQL-запросы: SELECT, INSERT, UPDATE, DELETE
@@ -19,7 +20,28 @@ class MySQLAdapter {
     if (typeof window === 'undefined') {
       return;
     }
+    // Инициализация данных по-умолчанию
+    if (!data.fighters) {
+      data.fighters = [
+        { id: "1", name: "Иван Петров", club: "Кёкусин-клуб 'Щит'", age: 24, discipline: "Кекусин", rating: 1420, belt: "Чёрный пояс" },
+        { id: "2", name: "Алексей Сидоров", club: "Fight Lab", age: 21, discipline: "ММА", rating: 1380, belt: "Коричневый" },
+        { id: "3", name: "Елена Волкова", club: "Академия Бокса", age: 28, discipline: "Бокс", rating: 1550 },
+        { id: "4", name: "Дмитрий Новиков", club: "Gracie Barra", age: 30, discipline: "BJJ", rating: 1600, belt: "Чёрный пояс" },
+        { id: "5", name: "Светлана Кузнецова", club: "Школа Дзюдо 'Иппон'", age: 19, discipline: "Judo", rating: 1300, belt: "Коричневый" },
+        { id: "6", name: "Максим Королёв", club: "Кёкусин-клуб 'Щит'", age: 22, discipline: "Кекусин", rating: 1480, belt: "Чёрный пояс" },
+      ];
+    }
+     if (!data.tournaments) {
+        data.tournaments = [];
+     }
+
     localStorage.setItem(this.storageKey, JSON.stringify(data));
+  }
+
+  constructor() {
+    // При первом создании экземпляра, убедимся, что данные есть
+    const db = this.getData();
+    this.saveData(db);
   }
 
   // Основной метод — эмулируем SQL
@@ -111,10 +133,10 @@ class MySQLAdapter {
     const tableMatch = sql.match(/insert into ([a-z_]+)/i);
     const table = tableMatch ? tableMatch[1] : "";
 
-    const columnsMatch = sql.match(/\(([^\)]+)\)\s*values/i);
+    const columnsMatch = sql.match(/\(([^)]+)\)\s*values/i);
     const columns = columnsMatch ? columnsMatch[1].split(",").map(c => c.trim()) : [];
 
-    const valuesMatch = sql.match(/values\s*\(([^\)]+)\)/i);
+    const valuesMatch = sql.match(/values\s*\(([^)]+)\)/i);
     const valuesStr = valuesMatch ? valuesMatch[1] : "";
     
     // Простой парсер значений (поддерживает строки в кавычках и числа)
